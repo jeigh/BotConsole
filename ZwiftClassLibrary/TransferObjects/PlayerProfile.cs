@@ -1,0 +1,155 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace ZwiftClassLibrary
+{
+    public class PlayerProfile
+    {
+        public long? Id { get; set; }
+        public int? WorldId { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public bool? Male { get; set; }
+        public string F7 { get; set; }
+        public uint? Weight { get; set; }
+        public uint? Ftp { get; set; }
+        public uint? F11 { get; set; }
+        public uint? BodyType { get; set; }
+        public uint? HairType { get; set; }
+        public uint? FacialHairType { get; set; }
+        public uint? RideHelmetType { get; set; }
+        public uint? GlassesType { get; set; }
+        public uint? RideShoesType { get; set; }
+        public uint? RideSocksType { get; set; }
+        public uint? RideGloves { get; set; }
+        public uint? RideJersey { get; set; }
+        public uint? F21 { get; set; }
+        public uint? BikeWheelFront { get; set; }
+        public uint? BikeWheelRear { get; set; }
+        public uint? BikeFrame { get; set; }
+        public uint? F25 { get; set; }
+        public uint? F26 { get; set; }
+        public ulong? BikeFrameColour { get; set; }
+        public ulong? F28 { get; set; }
+        public ulong? F29 { get; set; }
+        public ulong? F30 { get; set; }
+        public ulong? F31 { get; set; }
+        public ulong F32 { get; set; }
+        public byte[] SavedGame { get; set; }
+        public uint? CountryCode { get; set; }
+        public uint? TotalDistance { get; set; }
+        public uint? TotalDistanceClimbed { get; set; }
+        public uint? TotalTimeInMinutes { get; set; }
+        public uint? TotalInKomJersey { get; set; }
+        public uint? TotalInSprintersJersey { get; set; }
+        public uint? TotalInOrangeJersey { get; set; }
+        public uint? TotalWattHours { get; set; }
+        public uint? Height { get; set; }
+        public string Dob { get; set; }
+        public uint? MaxHeartRate { get; set; }
+        public bool? ConnectedToStrava { get; set; }
+        public uint? TotalExperiencePoints { get; set; }
+        public uint? TotalGold { get; set; }
+        public PlayerType? PlayerType { get; set; }
+        public uint? AchievementLevel { get; set; }
+        public bool? UseMetric { get; set; }
+        public bool? StravaPremium { get; set; }
+        public PowerType? PowerType { get; set; }
+        public uint? F53 { get; set; }
+        public uint? F54 { get; set; }
+        public uint? Age { get; set; }
+        public uint? F56 { get; set; }
+        public uint? F57 { get; set; }
+        public string ImageSrcLarge { get; set; }
+        public ulong? PrivacyBits { get; set; }
+        public FollowStatus? FollowStatus { get; set; }
+        public bool? ConnectedToTrainingPeaks { get; set; }
+        public bool? ConnectedToTodaysPlan { get; set; }
+        public EnrolledProgram? EnrolledProgram { get; set; }
+        public string TodayplanUrl { get; set; }
+        public uint? F67 { get; set; }
+        public uint? RunShirtType { get; set; }
+        public uint? RunShortsType { get; set; }
+        public uint? RunShoesType { get; set; }
+        public uint? RunSocksType { get; set; }
+        public uint? RunHelmetType { get; set; }
+        public uint? RunArmAccessory { get; set; }
+        public uint? TotalRunDistance { get; set; }
+        public uint? TotalRunExperiencePoints { get; set; }
+        public uint? F76 { get; set; }
+        public uint? F77 { get; set; }
+        public uint? F78 { get; set; }
+        public uint? F79 { get; set; }
+        public uint? F80 { get; set; }
+        public uint? F81 { get; set; }
+        public string MixPanelDistinctId { get; set; }
+        public uint? RunAchievementLevel { get; set; }
+        public uint? TotalRunTimeInMinutes { get; set; }
+        public Sport? Sport { get; set; }
+        public uint? UtcOffsetInMinutes { get; set; }
+        public bool? ConnectedToUnderArmour { get; set; }
+        public string PreferredLanguage { get; set; }
+        public uint? HairColour { get; set; }
+        public uint? FacialHairColour { get; set; }
+        public uint? F92 { get; set; }
+        public uint? F93 { get; set; }
+        public uint? RunShortsLength { get; set; }
+        public uint? F95 { get; set; }
+        public uint? RunSocksLength { get; set; }
+        public uint? F97 { get; set; }
+        public uint? RideSocksLength { get; set; }
+        public uint? F99 { get; set; }
+        public uint? F100 { get; set; }
+        public uint? F101 { get; set; }
+        public uint? F102 { get; set; }
+        public uint? F103 { get; set; }
+        public uint? F104 { get; set; }
+        public bool? ConnectedToWithings { get; set; }
+        public bool? ConnectedToFitbit { get; set; }
+        public string LaunchedGameClient { get; set; }
+        public long? CurrentActivityId { get; set; }
+        public bool? ConnectedToGarmin { get; set; }
+        public bool? F112 { get; set; }
+        public Dictionary<string, string> PublicAttributes { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> PrivateAttributes { get; set; } = new Dictionary<string, string>();
+        public int? TotalRunCalories { get; set; }
+        public long? F116 { get; set; }
+        public int? RunTime1miInSeconds { get; set; }
+        public int? RunTime5kmInSeconds { get; set; }
+        public int? RunTime10kmInSeconds { get; set; }
+        public int? RunTimeHalfMarathonInSeconds { get; set; }
+        public int? RunTimeFullMarathonInSeconds { get; set; }
+        public int? F122 { get; set; }
+        public CyclingOrganization? CyclingOrganization { get; set; }
+        public string F124 { get; set; }
+        public ActivityPrivacyType? DefaultActivityPrivacy { get; set; }
+        public bool? ConnectedToRuntastic { get; set; }
+        public uint? TargetExperiencePoints { get; set; }
+        public uint? TargetRunExperiencePoints { get; set; }
+        public int? F130 { get; set; }
+        public int? F131 { get; set; }
+        public int? F132 { get; set; }
+        public uint? F133 { get; set; }
+        public int? F134 { get; set; }
+        public int? F135 { get; set; }
+        public int? F136 { get; set; }
+        public int? F137 { get; set; }
+        public int? F138 { get; set; }
+        public int? F139 { get; set; }
+        public int? F140 { get; set; }
+        public int? F141 { get; set; }
+        public int? F142 { get; set; }
+        public int? F143 { get; set; }
+        public int? F144 { get; set; }
+
+        public float? F146 { get; set; }
+        public float? F147 { get; set; }
+        public float? F148 { get; set; }
+
+        public float? F149 { get; set; }
+        public float? F150 { get; set; }
+        public float? F151 { get; set; }
+
+    }
+}

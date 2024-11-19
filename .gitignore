@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /ANT_MANAGED_LIB
+/BotConsole/blah.http

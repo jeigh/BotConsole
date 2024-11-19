@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotConsole", "BotConsole.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ANT_Managed_Library", "..\ANT_MANAGED_LIB\ANT_Managed_Library.csproj", "{16270052-0DB5-41F9-8DD4-D1700E6E7281}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZwiftClassLibrary", "..\ZwiftClassLibrary\ZwiftClassLibrary.csproj", "{2C250F54-702D-4B59-8997-D1B7E13C0FB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{16270052-0DB5-41F9-8DD4-D1700E6E7281}.Release|Any CPU.Build.0 = Release|x86
 		{16270052-0DB5-41F9-8DD4-D1700E6E7281}.Release|x86.ActiveCfg = Release|x86
 		{16270052-0DB5-41F9-8DD4-D1700E6E7281}.Release|x86.Build.0 = Release|x86
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Debug|x86.Build.0 = Debug|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release_Arct|Any CPU.ActiveCfg = Release|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release_Arct|Any CPU.Build.0 = Release|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release_Arct|x86.ActiveCfg = Release|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release_Arct|x86.Build.0 = Release|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C250F54-702D-4B59-8997-D1B7E13C0FB9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
