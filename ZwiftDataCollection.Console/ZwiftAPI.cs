@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,8 +50,9 @@ public class ZwiftAPI
 
     public async Task Authenticate(string username, string password)
     {
-        using (var client = new HttpClient())
+        try
         {
+            using var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, $"{"https://secure.zwift.com"}/auth/realms/zwift/protocol/openid-connect/token");
             var content = new FormUrlEncodedContent(new[]
             {
@@ -62,7 +64,7 @@ public class ZwiftAPI
             request.Content = content;
 
             HttpResponseMessage response = await client.SendAsync(request);
-            string resp = await response.Content.ReadAsStringAsync();            
+            string resp = await response.Content.ReadAsStringAsync();
             JsonReader toDeserialize = new JsonTextReader(new StringReader(resp));
 
             var jsonSerializer = new JsonSerializer();
@@ -76,7 +78,7 @@ public class ZwiftAPI
 
             Console.WriteLine("Zwift auth token acquired");
 
-            
+
             if (authResponse.ContainsKey("expires_in") && int.TryParse(authResponse["expires_in"].ToString(), out int expires_in))
             {
                 int refreshNumber = expires_in * 1000 / 2;
@@ -84,19 +86,26 @@ public class ZwiftAPI
 
                 Profile = await GetProfileAsync("me");
             }
+            
+        } catch (Exception e)
+        {
+            System.Console.Write(e.ToString());
+            throw;
         }
     }
 
-    public async Task LoopPlayerStateRetrieval(int zwiftId, Action<int> DraftReceiver)
+    public async Task LoopPlayerStateRetrieval(int zwiftId, Action<int, int, float> updateDraftAndGrade)
     {
+        //todo: if token is expired, renew it.
         Thread.Sleep(2000);
+
         while (true)
         {
             var ps = await GetPlayerState(zwiftId);
             if (ps != null)
-                DraftReceiver(ps.Draft);
+                updateDraftAndGrade(zwiftId, ps.Draft, 0f);
 
-            Thread.Sleep(2000);
+            Thread.Sleep(1500);
         }
     }
 

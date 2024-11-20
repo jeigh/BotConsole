@@ -11,8 +11,8 @@ namespace BotConsole
         public int maxWattsAboveThreshold;
         public int PimaryZwiftId;
 
-        public string ZwiftPassword { get; set; }
-        public string ZwiftUsername { get; set; }
+        //public string ZwiftPassword { get; set; }
+        //public string ZwiftUsername { get; set; }
         
         
 
@@ -36,10 +36,10 @@ namespace BotConsole
 
             string primaryZwiftIdStrStr = ConfigurationManager.AppSettings["primaryZwiftId"];
             if (!int.TryParse(primaryZwiftIdStrStr, out PimaryZwiftId))
-                throw new ArgumentException("primaryZwiftId");            
+                throw new ArgumentException("primaryZwiftId");
 
-            ZwiftUsername = ConfigurationManager.AppSettings["zwiftUsername"];
-            ZwiftPassword = ConfigurationManager.AppSettings["zwiftPassword"];
+            //ZwiftUsername = ConfigurationManager.AppSettings["zwiftUsername"];
+            //ZwiftPassword = ConfigurationManager.AppSettings["zwiftPassword"];
 
         }
 

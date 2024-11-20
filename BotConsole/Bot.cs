@@ -6,28 +6,38 @@ namespace AntPlayground
 {
     public class Bot        
     {
-        private const int twentyMinutesInSeconds = 1200;
-        private const int millisecondsPerTick = 250;
-        private const int ticksPerSecond = 4;
+        private int _millisecondsPerTick;
 
+
+        private const int millisecondsPerSecond = 1000;
+        private const int twentyMinutesInSeconds = 1200;
+        private int _ticksPerSecond;
         private int _maxIdealTwentyMinuteAvgWatts;
         private int _basePowerValue;
-        
-        private const int queueSize = twentyMinutesInSeconds * ticksPerSecond;
+        private int _queueSize;
         private ushort _baseCadence;
+        private int _zwiftId;
 
-        private FixedSizeIntQueue _wattsQueue { get; set; } = new FixedSizeIntQueue(queueSize);
+        private FixedSizeIntQueue _wattsQueue;
+        private Func<int, int> _moreWattsToApply;
 
-        public Bot(ushort baseCadence, int maxIdealTwentyMinuteAvgWatts, int basePowerValue, IAnerobicStrategy anerobicStrategy)
+        public Bot(ushort baseCadence, int maxIdealTwentyMinuteAvgWatts, int basePowerValue, Func<int, int> moreWattsToApply, int zwiftId)
         {
+            _queueSize = twentyMinutesInSeconds * _ticksPerSecond;
+            _wattsQueue = new FixedSizeIntQueue(_queueSize);
+            _millisecondsPerTick = 250;
+
+            _ticksPerSecond = millisecondsPerSecond / _millisecondsPerTick;
+
             _baseCadence = baseCadence;
             _maxIdealTwentyMinuteAvgWatts = maxIdealTwentyMinuteAvgWatts;
             _basePowerValue = basePowerValue;
-            _anerobicStrategy = anerobicStrategy;
+            _moreWattsToApply = moreWattsToApply;
+            _zwiftId = zwiftId;
         }
 
         private AntHelper _antHelper = new AntHelper();
-        private readonly IAnerobicStrategy _anerobicStrategy;
+
 
         public void Run()
         {
@@ -39,9 +49,7 @@ namespace AntPlayground
                 {
                     try
                     {
-                        int power = ConditionBasePowerValue(_basePowerValue);
-
-                        power = _anerobicStrategy.ApplyAdditionalAnerobicPower(power);
+                        int power = ConditionBasePowerValue(_basePowerValue) + _moreWattsToApply(_zwiftId);
 
                         float currentTwentyMinuteJoules = DetermineCurrentTwentyMinuteJoules(power);
                         int twentyMinuteRemainingJoules = (int)Math.Floor(twentyMinutesInSeconds * _maxIdealTwentyMinuteAvgWatts - currentTwentyMinuteJoules);
@@ -49,16 +57,14 @@ namespace AntPlayground
                         power = ConditionPowerToPreventCattingUp(power, twentyMinuteRemainingJoules);
 
                         _wattsQueue.Enqueue(power);
-                        int secs = _wattsQueue.HistoryCount / ticksPerSecond;
+                        int secs = _wattsQueue.HistoryCount / _ticksPerSecond;
                         float sumOfJoules = currentTwentyMinuteJoules + twentyMinuteRemainingJoules;
                         
                         Console.WriteLine($"@{secs} secs: Power: {power}W 20M Joules: {currentTwentyMinuteJoules}j + Remaining Joules: {twentyMinuteRemainingJoules} = {sumOfJoules}");
 
                         byte[] payload = _antHelper.BuildPayload(power, _baseCadence);
-
                         bool val = _antHelper.SendPayload(payload);
-
-                        Thread.Sleep(millisecondsPerTick);
+                        Thread.Sleep(_millisecondsPerTick);
                     }
                     catch (Exception e)
                     {
@@ -83,7 +89,6 @@ namespace AntPlayground
             float currentTwentyMinuteJoules = tempArray.Sum() / 4;
             return currentTwentyMinuteJoules;
         }
-
 
         private static int ConditionBasePowerValue(int basePowerValue)
         {

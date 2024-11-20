@@ -1,7 +1,7 @@
-﻿namespace AntPlayground
-{
-    public interface IAnerobicStrategy
-    {
-        int ApplyAdditionalAnerobicPower(int power);
-    }
-}
+﻿//namespace AntPlayground
+//{
+//    public interface IAnerobicStrategy
+//    {
+//        int ApplyAdditionalAnerobicPower(int power);
+//    }
+//}
