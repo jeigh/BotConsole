@@ -98,11 +98,10 @@
     <Compile Include="BespokeConfig.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="FixedSizeQueue.cs" />
-    <Compile Include="IAnerobicStrategy.cs" />
-    <Compile Include="IdealAnerobicStrategy.cs" />
     <Compile Include="PowerData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rider.cs" />
     <Compile Include="SQLiteGateway.cs" />
   </ItemGroup>
   <ItemGroup>

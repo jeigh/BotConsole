@@ -36,16 +36,17 @@ namespace ZwiftDataCollection.Tests
             // Arrange
             var process = new Process(new MockConfig());
             int draft = 10;
-            float grade = 2.5f;
             int maxAdditionalPower = 100;
             float draftDenominator = 50f;
-            float gradeDenominator = 5f;
+            float elevationChangeDenominator = 5f;
+            float currentZ = 100f;
+            float previousZ = 95f;
 
             // Act
-            int result = process.CalculateAdditionalWatts(draft, grade, maxAdditionalPower, draftDenominator, gradeDenominator);
+            int result = process.CalculateAdditionalWatts(draft, currentZ, previousZ,  maxAdditionalPower, draftDenominator, elevationChangeDenominator);
 
             // Assert
-            Assert.AreEqual(70, result);
+            Assert.AreEqual(100, result);
         }
 
         [TestMethod]
@@ -54,13 +55,14 @@ namespace ZwiftDataCollection.Tests
             // Arrange
             var process = new Process(new MockConfig());
             int draft = 50;
-            float grade = 5f;
             int maxAdditionalPower = 100;
             float draftDenominator = 50f;
-            float gradeDenominator = 5f;
+            float elevationChangeDenominator = 5f;
+            float currentZ = 100f;
+            float previousZ = 95f;
 
             // Act
-            int result = process.CalculateAdditionalWatts(draft, grade, maxAdditionalPower, draftDenominator, gradeDenominator);
+            int result = process.CalculateAdditionalWatts(draft, currentZ, previousZ, maxAdditionalPower, draftDenominator, elevationChangeDenominator);
 
             // Assert
             Assert.AreEqual(100, result);
@@ -72,13 +74,14 @@ namespace ZwiftDataCollection.Tests
             // Arrange
             var process = new Process(new MockConfig());
             int draft = 0;
-            float grade = 0f;
             int maxAdditionalPower = 100;
             float draftDenominator = 50f;
-            float gradeDenominator = 5f;
+            float elevationChangeDenominator = 5f;
+            float currentZ = 100f;
+            float previousZ = 100f;
 
             // Act
-            int result = process.CalculateAdditionalWatts(draft, grade, maxAdditionalPower, draftDenominator, gradeDenominator);
+            int result = process.CalculateAdditionalWatts(draft, currentZ, previousZ, maxAdditionalPower, draftDenominator, elevationChangeDenominator);
 
             // Assert
             Assert.AreEqual(0, result);

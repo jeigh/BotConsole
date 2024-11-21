@@ -1,4 +1,5 @@
-﻿using ZwiftDataCollectionAgent.Console.DataAccess;
+﻿using ZwiftClassLibrary;
+using ZwiftDataCollectionAgent.Console.DataAccess;
 
 namespace ZwiftDataCollectionAgent.Console
 {
@@ -11,7 +12,7 @@ namespace ZwiftDataCollectionAgent.Console
         private int _maxAdditionalPower = 50;
 
         private float _draftDenominator = 100f;
-        private float _gradeDenominator = 5f;
+        private float _elevationChangeDenominator = 50f;
 
         private readonly IBespokeConfig _config;
 
@@ -28,22 +29,41 @@ namespace ZwiftDataCollectionAgent.Console
             System.Console.WriteLine("end.");
         }
 
-        private void UpdateRiderValues(int id, int draft, float grade)
+        private void UpdateRiderValues(int id, int draft, float currentZ, float previousZ)
         {
-            
-            int additionalWatts = CalculateAdditionalWatts(draft, grade, _maxAdditionalPower, _draftDenominator, _gradeDenominator);
+            int additionalWatts = CalculateAdditionalWatts(draft, currentZ, previousZ, _maxAdditionalPower, _draftDenominator, _elevationChangeDenominator);
 
-            System.Console.WriteLine($"Draft: {draft}, Grade {grade}, _maxAdditionalPower: {_maxAdditionalPower}, _draftDenominator: {_draftDenominator}, _gradeDenominator: {_gradeDenominator}, additionalWatts: {additionalWatts}");
-            _db.UpsertRiderValues(id, additionalWatts);
+            //todo: retrieve these from config eventually
+            var defaultCriticalPower = 185f;
+            var baseWatts = 165;
+
+            var rider = new Rider()
+            {
+                RiderId = id,
+                CurrentWatts = baseWatts + additionalWatts,
+                CurrentCadence = 90,
+                MaxIdealOneMinuteWatts = (int) (defaultCriticalPower * 1.3f),
+                MaxIdealFiveMinuteWatts = (int) (defaultCriticalPower * 1.2f),
+                MaxIdealTenMinuteWatts = (int) (defaultCriticalPower * 1.14f),
+                MaxIdealTwentyMinuteWatts = (int) (defaultCriticalPower * 1.05f),
+                MaxIdealOneHourWatts = (int) defaultCriticalPower,
+                MaxWattsAboveThreshold = 50
+            };
+
+            var stringifiedRider = $"Id: {rider.RiderId}, CW: {rider.CurrentWatts}, D: {draft}, (C-P)Z:{currentZ-previousZ} CC: {rider.CurrentCadence}, M1: {rider.MaxIdealOneMinuteWatts}, M5: {rider.MaxIdealFiveMinuteWatts}, M10: {rider.MaxIdealTenMinuteWatts}, M20: {rider.MaxIdealTwentyMinuteWatts}, M60: {rider.MaxIdealOneHourWatts}, MT: {rider.MaxWattsAboveThreshold}";
+            System.Console.WriteLine(stringifiedRider);
+
+            _db.UpsertRiderValues(rider);
         }
 
-        public int CalculateAdditionalWatts(int draft, float grade, int maxAdditionalPower, float draftDenominator, float gradeDenominator)
+        public int CalculateAdditionalWatts(int draft, float currentZ, float previousZ, int maxAdditionalPower, float draftDenominator, float elevationChangeDenominator)
         {
-            var draftAddend = GetAddend(draft, maxAdditionalPower, draftDenominator);
-            var gradeAddend = GetAddend(grade, maxAdditionalPower, gradeDenominator);
+            var elevationChange = currentZ - previousZ;
 
-            int additionalWatts = Min(draftAddend + gradeAddend, maxAdditionalPower);
-            return additionalWatts;
+            var draftAddend = GetAddend(draft, maxAdditionalPower, draftDenominator);
+            var gradeAddend = GetAddend(elevationChange, maxAdditionalPower, elevationChangeDenominator);
+
+            return new List<int> { draftAddend + gradeAddend, maxAdditionalPower }.Min();
         }
 
         public int GetAddend(float currentValue, float maxAdditionalPower, float gradeDenominator)

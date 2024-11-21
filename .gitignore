@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /ANT_MANAGED_LIB
 /BotConsole/blah.http
+/ZwiftDataCollection.Console/appsettings.json
+/BotConsole/App.config

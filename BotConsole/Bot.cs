@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccess;
+using System;
 using System.Linq;
 using System.Threading;
 
@@ -6,34 +7,25 @@ namespace AntPlayground
 {
     public class Bot        
     {
-        private int _millisecondsPerTick;
-
-
         private const int millisecondsPerSecond = 1000;
         private const int twentyMinutesInSeconds = 1200;
-        private int _ticksPerSecond;
-        private int _maxIdealTwentyMinuteAvgWatts;
-        private int _basePowerValue;
+        
+        //todo: make this configurable from within the database
+        private int _ticksPerSecond = 4;
         private int _queueSize;
-        private ushort _baseCadence;
-        private int _zwiftId;
-
+        private int _millisecondsPerTick;
         private FixedSizeIntQueue _wattsQueue;
-        private Func<int, int> _moreWattsToApply;
+        private Func<int, Rider> _retrieveRider;
+        private int _riderId;
 
-        public Bot(ushort baseCadence, int maxIdealTwentyMinuteAvgWatts, int basePowerValue, Func<int, int> moreWattsToApply, int zwiftId)
+        public Bot(int riderId, Func<int, Rider> retrieveRider)
         {
             _queueSize = twentyMinutesInSeconds * _ticksPerSecond;
             _wattsQueue = new FixedSizeIntQueue(_queueSize);
             _millisecondsPerTick = 250;
-
+            _retrieveRider = retrieveRider;
             _ticksPerSecond = millisecondsPerSecond / _millisecondsPerTick;
-
-            _baseCadence = baseCadence;
-            _maxIdealTwentyMinuteAvgWatts = maxIdealTwentyMinuteAvgWatts;
-            _basePowerValue = basePowerValue;
-            _moreWattsToApply = moreWattsToApply;
-            _zwiftId = zwiftId;
+            _riderId = riderId;
         }
 
         private AntHelper _antHelper = new AntHelper();
@@ -49,10 +41,11 @@ namespace AntPlayground
                 {
                     try
                     {
-                        int power = ConditionBasePowerValue(_basePowerValue) + _moreWattsToApply(_zwiftId);
+                        var rider = _retrieveRider(_riderId);
+                        int power = ConditionBasePowerValue(rider.CurrentWatts);
 
                         float currentTwentyMinuteJoules = DetermineCurrentTwentyMinuteJoules(power);
-                        int twentyMinuteRemainingJoules = (int)Math.Floor(twentyMinutesInSeconds * _maxIdealTwentyMinuteAvgWatts - currentTwentyMinuteJoules);
+                        int twentyMinuteRemainingJoules = (int)Math.Floor(twentyMinutesInSeconds * rider.MaxIdealTwentyMinuteWatts - currentTwentyMinuteJoules);
                        
                         power = ConditionPowerToPreventCattingUp(power, twentyMinuteRemainingJoules);
 
@@ -62,7 +55,7 @@ namespace AntPlayground
                         
                         Console.WriteLine($"@{secs} secs: Power: {power}W 20M Joules: {currentTwentyMinuteJoules}j + Remaining Joules: {twentyMinuteRemainingJoules} = {sumOfJoules}");
 
-                        byte[] payload = _antHelper.BuildPayload(power, _baseCadence);
+                        byte[] payload = _antHelper.BuildPayload(power, (ushort) rider.CurrentCadence);
                         bool val = _antHelper.SendPayload(payload);
                         Thread.Sleep(_millisecondsPerTick);
                     }

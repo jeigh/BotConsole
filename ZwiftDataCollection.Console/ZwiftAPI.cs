@@ -94,7 +94,9 @@ public class ZwiftAPI
         }
     }
 
-    public async Task LoopPlayerStateRetrieval(int zwiftId, Action<int, int, float> updateDraftAndGrade)
+    private float _lastZValue = 0f;
+
+    public async Task LoopPlayerStateRetrieval(int zwiftId, Action<int, int, float, float> updateDraftAndGrade)
     {
         //todo: if token is expired, renew it.
         Thread.Sleep(2000);
@@ -103,16 +105,20 @@ public class ZwiftAPI
         {
             var ps = await GetPlayerState(zwiftId);
             if (ps != null)
-                updateDraftAndGrade(zwiftId, ps.Draft, 0f);
+            { 
+
+                updateDraftAndGrade(zwiftId, ps.Draft, ps.Z, _lastZValue); 
+                _lastZValue = ps.Z;
+            }
 
             Thread.Sleep(1500);
         }
     }
 
-    public async Task<PlayerState> GetPlayerState() => 
-        await GetPlayerState(Profile.Id.Value);
+    public async Task<PlayerState?> GetPlayerState() => 
+        await GetPlayerState(Profile.Id!.Value);
 
-    public async Task<PlayerState> GetPlayerState(long id)
+    public async Task<PlayerState?> GetPlayerState(long id)
     {
         PlayerState pb;
         try
@@ -121,7 +127,8 @@ public class ZwiftAPI
         }
         catch (HttpRequestException e)
         {
-            Console.WriteLine(e?.Message);
+            if (e.StatusCode != System.Net.HttpStatusCode.NotFound)
+                Console.WriteLine(e?.Message);
             return null;
         }
         catch (Exception e)
@@ -133,13 +140,9 @@ public class ZwiftAPI
         return pb;
     }
 
-    public async Task<PlayerState> FetchPB(string urn, Dictionary<string, string> options, Dictionary<string, string> headers = null) 
+    public async Task<PlayerState> FetchPB(string urn, Dictionary<string, string> options) 
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{Scheme}://{Host}{urn}");
-        if (headers != null)
-            foreach (var header in headers)
-                request.Headers.Add(header.Key, header.Value);
-
         if (!string.IsNullOrEmpty(_authToken))
             request.Headers.Add("Authorization", $"Bearer {_authToken}");
 

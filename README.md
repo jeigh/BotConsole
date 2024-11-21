@@ -39,3 +39,4 @@ BotConsole is a console application designed to demonstrate the capabilities of 
 * Hill detction
 * Joule/watt limits so that it doesn't exceed 1m 5m and 10m power thresholds
 * Simulated HRM
+* Multiple rider support

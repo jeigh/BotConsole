@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using ZwiftClassLibrary;
 
 
 namespace ZwiftDataCollectionAgent.Console.DataAccess
@@ -20,7 +21,14 @@ namespace ZwiftDataCollectionAgent.Console.DataAccess
             string createTableQuery = @"
                     CREATE TABLE IF NOT EXISTS Rider (
                         RiderId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        AdditionalWatts INTEGER
+                        CurrentWatts INTEGER,
+                        CurrentCadence INTEGER,
+                        MaxIdealOneMinuteWatts INTEGER,
+                        MaxIdealFiveMinuteWatts INTEGER,                        
+                        MaxIdealTenMinuteWatts INTEGER,
+                        MaxIdealTwentyMinuteWatts INTEGER,
+                        MaxIdealOneHourWatts INTEGER,
+                        MaxWattsAboveThreshold INTEGER
                     );";
 
             using SQLiteCommand command = new SQLiteCommand(createTableQuery, connection);
@@ -32,13 +40,22 @@ namespace ZwiftDataCollectionAgent.Console.DataAccess
 
 
 
-        public int GetRiderValues(int riderId)
+        public Rider GetRiderValues(int riderId)
         {
             using SQLiteConnection connection = new SQLiteConnection(_connectionString);
             connection.Open();
 
             string selectQuery =
-                "SELECT AdditionalWatts " +
+                "SELECT " +
+                "   RiderId, " +
+                "   CurrentWatts, " +
+                "   CurrentCadence, " +
+                "   MaxIdealOneMinuteWatts, " +
+                "   MaxIdealFiveMinuteWatts, " +
+                "   MaxIdealTenMinuteWatts, " +
+                "   MaxIdealTwentyMinuteWatts , " +
+                "   MaxIdealOneHourWatts,  " +
+                "   MaxWattsAboveThreshold " +                
                 "FROM Rider " +
                 "WHERE RiderId = @RiderId";
 
@@ -50,50 +67,52 @@ namespace ZwiftDataCollectionAgent.Console.DataAccess
             if (!reader.Read())
                 throw new Exception("Rider not found.");
 
-            int additionalWatts = reader.GetInt32(0);
-            
-            return additionalWatts;
+            return new Rider
+            {
+                RiderId = reader.GetInt32(0),
+                CurrentWatts = reader.GetInt32(1),
+                CurrentCadence = reader.GetInt32(2),
+                MaxIdealOneMinuteWatts = reader.GetInt32(3),
+                MaxIdealFiveMinuteWatts = reader.GetInt32(4),
+                MaxIdealTenMinuteWatts = reader.GetInt32(5),
+                MaxIdealTwentyMinuteWatts = reader.GetInt32(6),
+                MaxIdealOneHourWatts = reader.GetInt32(7),
+                MaxWattsAboveThreshold = reader.GetInt32(8)
+            };
         }
 
-        public void UpsertRiderValues(int riderId, int additionalWatts)
+        public void UpsertRiderValues(Rider rider)
         {
             using SQLiteConnection connection = new SQLiteConnection(_connectionString);
             connection.Open();
 
-            string upsertQuery = 
-                "INSERT INTO Rider (RiderId, AdditionalWatts) " +
-                "VALUES (@RiderId, @AdditionalWatts) " +
+            string upsertQuery =
+                "INSERT INTO Rider (RiderId, CurrentWatts, CurrentCadence, MaxIdealOneMinuteWatts, MaxIdealFiveMinuteWatts, MaxIdealTenMinuteWatts, MaxIdealTwentyMinuteWatts, MaxIdealOneHourWatts, MaxWattsAboveThreshold) " +
+                "VALUES (@RiderId, @CurrentWatts, @CurrentCadence, @MaxIdealOneMinuteWatts, @MaxIdealFiveMinuteWatts, @MaxIdealTenMinuteWatts, @MaxIdealTwentyMinuteWatts, @MaxIdealOneHourWatts, @MaxWattsAboveThreshold) " +
                 "ON CONFLICT(RiderId) DO " +
-                "UPDATE SET AdditionalWatts = excluded.AdditionalWatts;";
+                "UPDATE SET " +
+                "   CurrentWatts = excluded.CurrentWatts, " +
+                "   CurrentCadence = excluded.CurrentCadence, " +
+                "   MaxIdealOneMinuteWatts = excluded.MaxIdealOneMinuteWatts, " +
+                "   MaxIdealFiveMinuteWatts = excluded.MaxIdealFiveMinuteWatts, " +
+                "   MaxIdealTenMinuteWatts = excluded.MaxIdealTenMinuteWatts, " +
+                "   MaxIdealTwentyMinuteWatts = excluded.MaxIdealTwentyMinuteWatts, " +
+                "   MaxIdealOneHourWatts = excluded.MaxIdealOneHourWatts, " +
+                "   MaxWattsAboveThreshold = excluded.MaxWattsAboveThreshold;";
 
             using SQLiteCommand command = new SQLiteCommand(upsertQuery, connection);
 
-            command.Parameters.AddWithValue("@RiderId", riderId);
-            command.Parameters.AddWithValue("@AdditionalWatts", additionalWatts);
+            command.Parameters.AddWithValue("@RiderId", rider.RiderId);
+            command.Parameters.AddWithValue("@CurrentWatts", rider.CurrentWatts);
+            command.Parameters.AddWithValue("@CurrentCadence", rider.CurrentCadence);
+            command.Parameters.AddWithValue("@MaxIdealOneMinuteWatts", rider.MaxIdealOneMinuteWatts);
+            command.Parameters.AddWithValue("@MaxIdealFiveMinuteWatts", rider.MaxIdealFiveMinuteWatts);
+            command.Parameters.AddWithValue("@MaxIdealTenMinuteWatts", rider.MaxIdealTenMinuteWatts);
+            command.Parameters.AddWithValue("@MaxIdealTwentyMinuteWatts", rider.MaxIdealTwentyMinuteWatts);
+            command.Parameters.AddWithValue("@MaxIdealOneHourWatts", rider.MaxIdealOneHourWatts);
+            command.Parameters.AddWithValue("@MaxWattsAboveThreshold", rider.MaxWattsAboveThreshold);
 
             command.ExecuteNonQuery();
-            System.Console.WriteLine($"Upserted Watts to {additionalWatts} for rider {riderId}");
-            
         }
-
-
-        //public void UpdateRiderValues(int riderId, int additionalWatts)
-        //{
-        //    using SQLiteConnection connection = new SQLiteConnection(_connectionString);
-        //    connection.Open();
-
-        //    string updateQuery =
-        //        "UPDATE Rider SET " +
-        //        "   LastDraftValue = @AdditionalWatts, " +
-        //        "WHERE RiderId = @RiderId";
-
-        //    using SQLiteCommand command = new SQLiteCommand(updateQuery, connection);
-
-        //    command.Parameters.AddWithValue("@LastDraftValue", additionalWatts);
-        //    command.Parameters.AddWithValue("@RiderId", riderId);
-
-        //    command.ExecuteNonQuery();
-        //    System.Console.WriteLine($"Updated Watts to {additionalWatts} for rider {riderId}");
-        //}
     }
 }
