@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ZwiftClassLibrary;
+using ZwiftDataCollectionAgent.Console;
 
 public class ZwiftAPI
 {
@@ -94,9 +95,9 @@ public class ZwiftAPI
         }
     }
 
-    private float _lastZValue = 0f;
+    private ThreeDimensionalPoint previous = new(0,0,0);
 
-    public async Task LoopPlayerStateRetrieval(int zwiftId, Action<int, int, float, float> updateDraftAndGrade)
+    public async Task LoopPlayerStateRetrieval(int zwiftId, Action<int, int, ThreeDimensionalPoint, ThreeDimensionalPoint, float> updateDraftAndGrade)
     {
         //todo: if token is expired, renew it.
         Thread.Sleep(2000);
@@ -105,10 +106,10 @@ public class ZwiftAPI
         {
             var ps = await GetPlayerState(zwiftId);
             if (ps != null)
-            { 
-
-                updateDraftAndGrade(zwiftId, ps.Draft, ps.Z, _lastZValue); 
-                _lastZValue = ps.Z;
+            {
+                var current = new ThreeDimensionalPoint(ps.X, ps.Y, ps.Z);
+                updateDraftAndGrade(zwiftId, ps.Draft, current, previous, ps.Speed / 1000000); 
+                previous = current;
             }
 
             Thread.Sleep(1500);

@@ -1,31 +1,37 @@
 ﻿using ANT_Managed_Library;
 
-
-namespace AntPlayground
+namespace AntHelpers
 {
-    public class AntHelper
+    public class AntTransmitHelper
     {
         private ANT_Device _device = null;
         private ANT_Channel _channel = null;
-        private byte[] NETKEY = new byte[] { 0xB9, 0xA5, 0x21, 0xFB, 0xBD, 0x72, 0xC3, 0x45 };
         private PowerData _powerData = new PowerData();
 
-        public void InitializePowerMeter()
+        private ushort _deviceNumber;
+        private ushort _periodFrequency;
+        private byte _channelFrequency;
+
+        public void InitializePowerMeter(ushort deviceNumber, ushort periodFrequency, byte channelFrequency)
         {
+            _deviceNumber = deviceNumber;
+            _periodFrequency = periodFrequency;
+            _channelFrequency = channelFrequency;
+
             _device = new ANT_Device();
-            _device.setNetworkKey(0, NETKEY);
+            _device.setNetworkKey(0, Constants.NETKEY);
 
             _channel = _device.getChannel(0);
             _channel.assignChannel(ANT_ReferenceLibrary.ChannelType.BASE_Master_Transmit_0x10, 0);
 
-            _channel.setChannelID(35, false, 0x0B, 0x01);
-            _channel.setChannelPeriod(8192);
-            _channel.setChannelFreq(57);
+            _channel.setChannelID(_deviceNumber, false, Constants.DeviceTypeBicyclePower, 0x01);
+            _channel.setChannelPeriod(_periodFrequency);
+            _channel.setChannelFreq(_channelFrequency);
 
             _channel.openChannel();
         }
 
-        public bool SendPayload(byte[] payload) => 
+        public bool SendPayload(byte[] payload) =>
             _channel.sendBroadcastData(payload);
 
         public void CloseAndDispose()

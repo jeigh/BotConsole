@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using AntHelpers;
+using DataAccess;
 using System;
 using System.Linq;
 using System.Threading;
@@ -10,30 +11,38 @@ namespace AntPlayground
         private const int millisecondsPerSecond = 1000;
         private const int twentyMinutesInSeconds = 1200;
         
-        //todo: make this configurable from within the database
-        private int _ticksPerSecond = 4;
+        
+        private int _ticksPerSecond;
+        
         private int _queueSize;
         private int _millisecondsPerTick;
         private FixedSizeIntQueue _wattsQueue;
         private Func<int, Rider> _retrieveRider;
         private int _riderId;
+        private DateTime _backoffUntil = DateTime.MinValue;
+        private float _backoffMultiplier = 2f / 3f;
+        private float _freqPerSecond = 8193f * 4f;
 
         public Bot(int riderId, Func<int, Rider> retrieveRider)
         {
+            //todo: make this configurable from within the database    
+            _ticksPerSecond = 1;
+
             _queueSize = twentyMinutesInSeconds * _ticksPerSecond;
             _wattsQueue = new FixedSizeIntQueue(_queueSize);
-            _millisecondsPerTick = 250;
+            _millisecondsPerTick = millisecondsPerSecond / _ticksPerSecond;
             _retrieveRider = retrieveRider;
-            _ticksPerSecond = millisecondsPerSecond / _millisecondsPerTick;
+            
+            
             _riderId = riderId;
         }
 
-        private AntHelper _antHelper = new AntHelper();
+        private AntTransmitHelper _antHelper = new AntTransmitHelper();
 
 
         public void Run()
         {
-            _antHelper.InitializePowerMeter();                     
+            _antHelper.InitializePowerMeter(25, (ushort) (_freqPerSecond / _ticksPerSecond), 57);
 
             try
             {
@@ -47,7 +56,7 @@ namespace AntPlayground
                         float currentTwentyMinuteJoules = DetermineCurrentTwentyMinuteJoules(power);
                         int twentyMinuteRemainingJoules = (int)Math.Floor(twentyMinutesInSeconds * rider.MaxIdealTwentyMinuteWatts - currentTwentyMinuteJoules);
                        
-                        power = ConditionPowerToPreventCattingUp(power, twentyMinuteRemainingJoules);
+                        power = ConditionPowerToPreventCattingUp(power, twentyMinuteRemainingJoules, DateTime.Now);
 
                         _wattsQueue.Enqueue(power);
                         int secs = _wattsQueue.HistoryCount / _ticksPerSecond;
@@ -91,16 +100,36 @@ namespace AntPlayground
             return power;
         }
 
-        private int ConditionPowerToPreventCattingUp(int power, int remainingJoules)
-        {
-            if (remainingJoules <= 2000) 
-                power = power * 2 / 3;
-            
-            if (remainingJoules <= 100) 
-                power = power / 2;
+        
 
+        public int ConditionPowerToPreventCattingUp(int power, int remainingJoules, DateTime currentTime)
+        {
             if (remainingJoules <= power)
+            {
+                // power is at immediate risk...  reduce intensity to zero and back off for 15 secs
+                _backoffUntil = currentTime + TimeSpan.FromSeconds(15);
                 power = 0;
+            }
+
+            else if (remainingJoules <= 100)
+            {
+                // power is at risk...  reduce intensity by half and back off for 10 secs
+                _backoffUntil = currentTime + TimeSpan.FromSeconds(10);
+                power = power / 2;
+            }
+
+            else if (remainingJoules <= 1000)
+            {
+                // power may be at risk soon...  reduce intensity by a third and back off for 5 secs
+                _backoffUntil = currentTime + TimeSpan.FromSeconds(5);
+                power = (int) (power * _backoffMultiplier);
+            }
+
+            else if (currentTime < _backoffUntil)
+            {
+                // power is not currently at risk, but recently exceeded threshold...  hold back just a little longer
+                power = power * 2 / 3;
+            }
 
             return power;
         }

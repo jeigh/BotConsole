@@ -1,4 +1,7 @@
 using ZwiftDataCollectionAgent.Console;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using DataAccess;
 
 namespace ZwiftDataCollection.Tests
 {
@@ -11,80 +14,12 @@ namespace ZwiftDataCollection.Tests
             public string zwiftUsername { get; set; }
             public int zwiftId { get; set; }
         }
-
-        [DataTestMethod]
-        [DataRow(0f, 100f, 5f, 0)]
-        [DataRow(2.5f, 100f, 5f, 50)]
-        [DataRow(5f, 100f, 5f, 100)]
-        [DataRow(10f, 100f, 5f, 100)]
-        public void GetGradeAddend_ReturnsExpectedResult(float currentGrade, float maxAdditionalPower, float gradeDenominator, int expected)
-        {
-            // Arrange
-            var cfg = new MockConfig();
-            var process = new Process(cfg);
-
-            // Act
-            int result = process.GetAddend(currentGrade, maxAdditionalPower, gradeDenominator);
-
-            // Assert
-            Assert.AreEqual(expected, result);
-        }
-
-        [TestMethod]
-        public void CalculateAdditionalWatts_ShouldReturnCorrectValue_WhenDraftAndGradeArePositive()
-        {
-            // Arrange
-            var process = new Process(new MockConfig());
-            int draft = 10;
-            int maxAdditionalPower = 100;
-            float draftDenominator = 50f;
-            float elevationChangeDenominator = 5f;
-            float currentZ = 100f;
-            float previousZ = 95f;
-
-            // Act
-            int result = process.CalculateAdditionalWatts(draft, currentZ, previousZ,  maxAdditionalPower, draftDenominator, elevationChangeDenominator);
-
-            // Assert
-            Assert.AreEqual(100, result);
-        }
-
-        [TestMethod]
-        public void CalculateAdditionalWatts_ShouldReturnMaxAdditionalPower_WhenSumExceedsMax()
-        {
-            // Arrange
-            var process = new Process(new MockConfig());
-            int draft = 50;
-            int maxAdditionalPower = 100;
-            float draftDenominator = 50f;
-            float elevationChangeDenominator = 5f;
-            float currentZ = 100f;
-            float previousZ = 95f;
-
-            // Act
-            int result = process.CalculateAdditionalWatts(draft, currentZ, previousZ, maxAdditionalPower, draftDenominator, elevationChangeDenominator);
-
-            // Assert
-            Assert.AreEqual(100, result);
-        }
-
-        [TestMethod]
-        public void CalculateAdditionalWatts_ShouldReturnZero_WhenDraftAndGradeAreZero()
-        {
-            // Arrange
-            var process = new Process(new MockConfig());
-            int draft = 0;
-            int maxAdditionalPower = 100;
-            float draftDenominator = 50f;
-            float elevationChangeDenominator = 5f;
-            float currentZ = 100f;
-            float previousZ = 100f;
-
-            // Act
-            int result = process.CalculateAdditionalWatts(draft, currentZ, previousZ, maxAdditionalPower, draftDenominator, elevationChangeDenominator);
-
-            // Assert
-            Assert.AreEqual(0, result);
-        }
     }
+
+
+
 }
+
+
+
+

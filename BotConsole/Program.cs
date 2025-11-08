@@ -2,9 +2,6 @@
 using System;
 using System.Threading.Tasks;
 using DataAccess;
-using System.Runtime.CompilerServices;
-
-
 
 namespace BotConsole
 {

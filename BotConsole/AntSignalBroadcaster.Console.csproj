@@ -94,26 +94,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntHelper.cs" />
     <Compile Include="BespokeConfig.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="FixedSizeQueue.cs" />
-    <Compile Include="PowerData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rider.cs" />
-    <Compile Include="SQLiteGateway.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="blah.http" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ANT_MANAGED_LIB\ANT_Managed_Library.csproj">
-      <Project>{16270052-0db5-41f9-8dd4-d1700e6e7281}</Project>
-      <Name>ANT_Managed_Library</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8.1">
@@ -126,6 +116,16 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AntHelpers\AntHelpers.csproj">
+      <Project>{5584d72a-2a1e-40f2-95fd-8380bd525188}</Project>
+      <Name>AntHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{E2F7C749-2D0C-4335-8ACD-5A7744854F87}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
