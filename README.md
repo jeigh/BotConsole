@@ -18,7 +18,7 @@ BotConsole is a console application designed to demonstrate the capabilities of 
 1. Clone the repository.
 2. Open the solution in Visual Studio.
 3. Build the solution to restore the necessary packages.
-4. Extract the ant+ libraries from thisisant.com to the correct location.
+4. Extract the ant+ libraries from thisisant.com to the correct location.  I didn't include them in this project because it's not my code to share.
 1. Copy the wrapper dll to the correct location.
 1. Set the configuration values in the app.config file of the BotConsole project.
 1. Set the configuration values on the appsettings.json file of the ZwiftDataCollectionAgent.
