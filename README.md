@@ -13,7 +13,7 @@ BotConsole is a console application designed to demonstrate the capabilities of 
 ## Requirements
 - .NET Framework 4.0 or .NET Framework 4.8.1
 - Visual Studio
-**- You must have access to the wrapper dll and the corresponding ANT_Managed_Library.  These are not my IP, so you'll need to go get them yourself and put them in the right spot before building.**
+- **You must have access to the wrapper dll and the corresponding ANT_Managed_Library.  These are not my IP, so you'll need to go get them yourself and put them in the right spot before building.**
 
 ## Getting Started
 1. Clone the repository.
