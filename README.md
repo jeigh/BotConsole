@@ -7,12 +7,13 @@ BotConsole is a console application designed to demonstrate the capabilities of 
 - Basic ant+ powermeter/cadence bot
 - Random noise so that it doesn't look too obviously like a bot
 - Joule/watt limits so that it doesn't exceed 20m power thresholds
-- Simple drafting logic
+- **Simple** drafting logic
 - TT mode (where draft is ignored)
  
 ## Requirements
 - .NET Framework 4.0 or .NET Framework 4.8.1
 - Visual Studio
+**- You must have access to the wrapper dll and the corresponding ANT_Managed_Library.  These are not my IP, so you'll need to go get them yourself and put them in the right spot before building.**
 
 ## Getting Started
 1. Clone the repository.
