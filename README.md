@@ -7,18 +7,19 @@ BotConsole is a console application designed to demonstrate the capabilities of 
 - Basic ant+ powermeter/cadence bot
 - Random noise so that it doesn't look too obviously like a bot
 - Joule/watt limits so that it doesn't exceed 20m power thresholds
-- Simple drafting logic
+- **Simple** drafting logic
 - TT mode (where draft is ignored)
  
 ## Requirements
 - .NET Framework 4.0 or .NET Framework 4.8.1
 - Visual Studio
+- **You must have access to the wrapper dll and the corresponding ANT_Managed_Library.  These are not my IP, so you'll need to go get them yourself and put them in the right spot before building.**
 
 ## Getting Started
 1. Clone the repository.
 2. Open the solution in Visual Studio.
 3. Build the solution to restore the necessary packages.
-4. Extract the ant+ libraries from thisisant.com to the correct location.
+4. Extract the ant+ libraries from thisisant.com to the correct location.  I didn't include them in this project because it's not my code to share.
 1. Copy the wrapper dll to the correct location.
 1. Set the configuration values in the app.config file of the BotConsole project.
 1. Set the configuration values on the appsettings.json file of the ZwiftDataCollectionAgent.
