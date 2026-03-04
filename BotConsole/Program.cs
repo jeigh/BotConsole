@@ -21,7 +21,7 @@ namespace BotConsole
                 riderRetrievalMethod = dataAccess.GetRiderValues;
             }
             
-            Bot bot = new Bot(config.PimaryZwiftId, riderRetrievalMethod);
+            Bot bot = new Bot(config.PrimaryZwiftId, riderRetrievalMethod);
             bot.Run();
 
             Console.WriteLine("Ending...");

@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BespokeConfig.cs" />
-    <Compile Include="FeatureAbstraction.cs" />
+    <Compile Include="PowerMeterReceiver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

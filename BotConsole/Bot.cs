@@ -1,7 +1,6 @@
 ﻿using AntHelpers;
 using DataAccess;
 using System;
-using System.Linq;
 using System.Threading;
 
 namespace AntPlayground
@@ -22,6 +21,8 @@ namespace AntPlayground
         private DateTime _backoffUntil = DateTime.MinValue;
         private float _backoffMultiplier = 2f / 3f;
         private float _freqPerSecond = 8193f * 4f;
+
+        private float _rollingJoulesSum = 0f;
 
         public Bot(int riderId, Func<int, Rider> retrieveRider)
         {
@@ -58,7 +59,9 @@ namespace AntPlayground
                        
                         power = ConditionPowerToPreventCattingUp(power, twentyMinuteRemainingJoules, DateTime.Now);
 
-                        _wattsQueue.Enqueue(power);
+                        int? evicted = _wattsQueue.Enqueue(power);
+                        _rollingJoulesSum += power - (evicted ?? 0);
+
                         int secs = _wattsQueue.HistoryCount / _ticksPerSecond;
                         float sumOfJoules = currentTwentyMinuteJoules + twentyMinuteRemainingJoules;
                         
@@ -74,7 +77,6 @@ namespace AntPlayground
                         break;
                     }
                 }
-
             }
             finally
             {
@@ -84,17 +86,17 @@ namespace AntPlayground
 
         private float DetermineCurrentTwentyMinuteJoules(int power)
         {
-            var tempArray = _wattsQueue.ToArray();
-            tempArray = tempArray.Skip(1).ToArray();
-            tempArray.Append(power);
-
-            float currentTwentyMinuteJoules = tempArray.Sum() / 4;
-            return currentTwentyMinuteJoules;
+            // Compute the prospective sum: rolling total minus the oldest value that
+            // would be evicted, plus the new power value - all without allocating arrays.
+            int? nextEviction = _wattsQueue.IsFull ? (int?)_wattsQueue.Peek() : null;
+            float prospectiveSum = _rollingJoulesSum - (nextEviction ?? 0) + power;
+            return prospectiveSum / 4f;
         }
+        private static Random rng = new Random();
 
         private static int ConditionBasePowerValue(int basePowerValue)
         {
-            int randomnumber = new Random().Next(-10, 10);
+            int randomnumber = rng.Next(-10, 10);
             int power = basePowerValue + randomnumber;
             if (power < 30) power = 0;
             return power;

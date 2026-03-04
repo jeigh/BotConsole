@@ -6,12 +6,12 @@ namespace BotConsole
     public class BespokeConfig
     {
 
-        public int PimaryZwiftId;
+        public int PrimaryZwiftId;
 
         public BespokeConfig()
         {
             string primaryZwiftIdStrStr = ConfigurationManager.AppSettings["primaryZwiftId"];
-            if (!int.TryParse(primaryZwiftIdStrStr, out PimaryZwiftId))
+            if (!int.TryParse(primaryZwiftIdStrStr, out PrimaryZwiftId))
                 throw new ArgumentException("primaryZwiftId");
         }
     }

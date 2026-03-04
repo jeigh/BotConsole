@@ -9,7 +9,7 @@ namespace AntPowerMeterReceiver.Console
         {
             await Task.Delay(15000);
 
-            FeatureAbstraction feature = new FeatureAbstraction();
+            PowerMeterReceiver feature = new PowerMeterReceiver();
             await feature.RunAsync();
         }
     }

@@ -8,7 +8,7 @@ namespace AntPowerMeterReceiver.Console
 {
     internal partial class Program
     {
-        public class FeatureAbstraction
+        public class PowerMeterReceiver
         {
             private const ushort deviceNumber = 24165; //25558;
             private const ushort freq = (8182*4);
@@ -27,7 +27,7 @@ namespace AntPowerMeterReceiver.Console
 
                 var rider = new Rider()
                 {
-                    RiderId = config.PimaryZwiftId,
+                    RiderId = config.PrimaryZwiftId,
                     CurrentWatts = (int) (_multiplier * power),
                     CurrentCadence = 90,
                     MaxIdealOneMinuteWatts = (int) (_ridersHourPower * 1.3f),
@@ -44,7 +44,7 @@ namespace AntPowerMeterReceiver.Console
             }
 
 
-            public FeatureAbstraction()
+            public PowerMeterReceiver()
             {
                 _dal = new SQLiteGateway();
                 _receiver = new AntReceiveHelper(PersistData);
